@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthSession, AuthSessionSchema, User, UserSchema } from 'src/database/schemas';
+import { Auth, AuthSessionSchema, User, UserSchema } from 'src/database/schemas';
 import { AuthGuard } from 'src/guard';
 import { IJWTConfig } from 'src/models';
 
@@ -24,11 +24,12 @@ import { IJWTConfig } from 'src/models';
       },
     }),
     MongooseModule.forFeature([
-      { name: AuthSession.name, schema: AuthSessionSchema },
+      { name: Auth.name, schema: AuthSessionSchema },
       { name: User.name, schema: UserSchema },
     ]),
   ],
   providers: [AuthService, AuthGuard],
   controllers: [AuthController],
+  exports:[AuthGuard,JwtModule]
 })
 export class AuthModule {}

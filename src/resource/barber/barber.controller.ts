@@ -1,0 +1,48 @@
+import { UseGuards, Controller, Get, Param, Post, Body, Patch, Delete } from "@nestjs/common"
+import { AuthUser } from "src/decorator"
+import { AuthGuard } from "src/guard"
+import { CreateBarberServiceDto } from "./dto/create-barber.dto"
+import { UpdateBarberServiceDto } from "./dto/update-barber.dto"
+import { BarberService } from "./barber.service"
+import { IdDto } from "src/dto/parap-id.dto"
+
+@UseGuards(AuthGuard)
+@Controller('barbers')
+export class BarberController {
+  constructor(private readonly barbersService: BarberService) { }
+
+  @Post('create')
+  async createBarber(@AuthUser('id') id:string,@Body() dto:CreateBarberServiceDto,){
+    return this.barbersService.createBarber(id,dto)
+  }
+
+  @Get()
+  async getAllBarbers() {
+    return this.barbersService.findAllBarbers()
+  }
+
+  @Get(':id')
+  async findOneBarber(@Param() param: IdDto) {
+    return this.barbersService.findOneBarber(param.id)
+  }
+
+  @Post('service')
+  async createServices(@AuthUser('id') id: string, @Body() dto: CreateBarberServiceDto) {
+    return this.barbersService.createService(id, dto)
+  }
+
+  @Patch('service')
+  async updateService(@AuthUser('id') id: string, @Body() dto: UpdateBarberServiceDto) {
+    return this.barbersService.updateService(id, dto)
+  }
+
+  @Delete('service')
+  async removeService(@AuthUser('id') id: string) {
+    return this.barbersService.removeService(id)
+  }
+
+  @Get('service/:id')
+  async getOneService(@Param() @Body() param: IdDto) {
+    return this.barbersService.getOneServices(param.id)
+  }
+}

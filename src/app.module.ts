@@ -7,6 +7,7 @@ import { validationSchema } from './validation/validation.schema';
 import { jwtConfig, mongoConfig } from './configs';
 // import { UserModule } from './user/user.module';
 import { AuthModule } from './resource/auth/auth.module';
+import { BarberModule } from './resource/barber/barber.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuthModule } from './resource/auth/auth.module';
       },
     }),
     AuthModule,
+    BarberModule,
     // UserModule,
   ],
   controllers: [AppController],

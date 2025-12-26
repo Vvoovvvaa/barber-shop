@@ -2,14 +2,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { status } from 'src/database/enums';
 
-export type AuthSessionDocument = HydratedDocument<AuthSession>;
+export type AuthSessionDocument = HydratedDocument<Auth>;
 
 @Schema({ timestamps: true })
-export class AuthSession {
+export class Auth {
     @Prop({ required: true })
     phone: string;
 
-    @Prop({ enum: status, required: true })
+    @Prop({ enum: status, required: true,default:status.CLIENT })
     status: status;
 
     @Prop({ required: true })
@@ -23,9 +23,5 @@ export class AuthSession {
 }
 
 export const AuthSessionSchema =
-    SchemaFactory.createForClass(AuthSession);
+    SchemaFactory.createForClass(Auth);
 
-AuthSessionSchema.index(
-    { expiresAt: 1 },
-    { expireAfterSeconds: 0 },
-);

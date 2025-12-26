@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 
 import { BarberOrClientDTO } from './dto/create-auth.dto';
-import { AuthSession, AuthSessionDocument, User } from 'src/database/schemas';
+import { Auth, AuthSessionDocument, User } from 'src/database/schemas';
 import { createRandomCode } from 'src/helper';
 import { IJWTConfig } from 'src/models';
 
@@ -14,7 +14,7 @@ import { IJWTConfig } from 'src/models';
 export class AuthService {
   private jwtConfig: IJWTConfig;
   constructor(
-    @InjectModel(AuthSession.name)
+    @InjectModel(Auth.name)
     private readonly authSessionModel: Model<AuthSessionDocument>,
     @InjectModel(User.name)
     private readonly userModel: Model<User>,
@@ -24,7 +24,7 @@ export class AuthService {
     this.jwtConfig = this.configService.get("JWT_CONFIG") as IJWTConfig
   }
 
-  async sendCode(dto: BarberOrClientDTO) {
+  async registration(dto: BarberOrClientDTO) {
     let user = await this.userModel.findOne({ phone: dto.phone });
     if (!user) {
       user = await this.userModel.create({
@@ -60,7 +60,7 @@ export class AuthService {
     };
   }
 
-  async verifyCode(phone: string, code: string) {
+  async login(phone: string, code: string) {
     const session = await this.authSessionModel.findOne({ phone, code });
     if (!session || session.expiresAt < new Date()) {
       throw new UnauthorizedException('Invalid or expired code');
