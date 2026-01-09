@@ -8,7 +8,7 @@ export class BarberOrClientDTO {
     @IsPhoneNumber()
     phone : string
 
-    @IsEnum({enum:status})
-    @IsNotEmpty()
-    statusUser : status
+    // @IsEnum({enum:status})
+    // @IsNotEmpty()
+    // statusUser : status
 }

@@ -9,7 +9,7 @@ export class User {
   @Prop()
   name: string;
 
-  @Prop({ enum: status, required: true })
+  @Prop({ enum: status, required: true ,default:status.CLIENT})
   role: status;
 }
 

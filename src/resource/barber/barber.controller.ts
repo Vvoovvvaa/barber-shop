@@ -12,8 +12,8 @@ export class BarberController {
   constructor(private readonly barbersService: BarberService) { }
 
   @Post('create')
-  async createBarber(@AuthUser('id') id:string,@Body() dto:CreateBarberServiceDto,){
-    return this.barbersService.createBarber(id,dto)
+  async createBarber(@AuthUser('id') id:string){
+    return this.barbersService.changeStatus(id)
   }
 
   @Get()
@@ -39,10 +39,5 @@ export class BarberController {
   @Delete('service')
   async removeService(@AuthUser('id') id: string) {
     return this.barbersService.removeService(id)
-  }
-
-  @Get('service/:id')
-  async getOneService(@Param() @Body() param: IdDto) {
-    return this.barbersService.getOneServices(param.id)
   }
 }

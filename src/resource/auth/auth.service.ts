@@ -29,7 +29,7 @@ export class AuthService {
     if (!user) {
       user = await this.userModel.create({
         phone: dto.phone,
-        role: dto.statusUser,
+        // role: dto.statusUser,
       });
     }
 
@@ -37,7 +37,7 @@ export class AuthService {
 
     const session = await this.authSessionModel.create({
       phone: dto.phone,
-      status: dto.statusUser,
+      // status: dto.statusUser,
       code,
     });
 

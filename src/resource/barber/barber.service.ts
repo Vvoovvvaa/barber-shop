@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { status } from "src/database/enums";
-import { Barber, User} from "src/database/schemas";
+import { Barber, User } from "src/database/schemas";
 import { CreateBarberServiceDto } from "./dto/create-barber.dto";
 import { UpdateBarberServiceDto } from "./dto/update-barber.dto";
 
@@ -15,20 +15,41 @@ export class BarberService {
     private readonly userModel: Model<User>
   ) { }
 
-async createBarber(userId: string, dto: CreateBarberServiceDto) {
-  const user = await this.userModel.findById(userId);
-  if (!user) {
-    throw new NotFoundException('User not found');
+  async changeStatus(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.role === status.CLIENT) {
+      user.role = status.BARBER;
+    }
+
+    Object.assign(user);
+
+    return await user.save();
   }
 
-  if (user.role === status.CLIENT) {
-    user.role = status.BARBER;
+  async barberServices(userId: string, dto: CreateBarberServiceDto) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.role !== status.BARBER) {
+      throw new ForbiddenException('Only barbers can add services');
+    }
+
+    const barberService = await this.barberModel.create({
+      user: user._id,        
+      description: dto.description,
+      services: dto.services,
+      workingHours: dto.workingHours,
+      experience: dto.experience || 0,
+    });
+
+    return barberService;
   }
-
-  Object.assign(user, dto);
-
-  return await user.save();
-}
 
 
   async findAllBarbers() {
@@ -72,11 +93,8 @@ async createBarber(userId: string, dto: CreateBarberServiceDto) {
       throw new NotFoundException('service not found')
     }
 
-    return this.barberModel.findOneAndDelete({ _id: service._id })
-  }
-
-  async getOneServices(userId: string) {
-    return this.barberModel.findOne({ user: userId }).populate('user')
+    await this.barberModel.findOneAndDelete({ _id: service._id })
+    return {message:"Service succesful deleted"}
   }
 
 }
