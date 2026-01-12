@@ -1,17 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    container_name: nest_app
-    restart: always
-    ports:
-      - "${PORT}:2002"
-    env_file:
-      - .env
-    depends_on:
-      - mongo
-
   mongo:
     image: mongo:6
     container_name: mongo_db

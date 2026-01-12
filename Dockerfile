@@ -9,6 +9,6 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 2200
+EXPOSE 2206
 
 CMD ["npm", "run", "start:prod"]

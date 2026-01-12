@@ -8,6 +8,7 @@ import { jwtConfig, mongoConfig } from './configs';
 // import { UserModule } from './user/user.module';
 import { AuthModule } from './resource/auth/auth.module';
 import { BarberModule } from './resource/barber/barber.module';
+import { AppoitmentModule } from './resource/appoitment/appoitment.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { BarberModule } from './resource/barber/barber.module';
     }),
     AuthModule,
     BarberModule,
+    AppoitmentModule
     // UserModule,
   ],
   controllers: [AppController],
