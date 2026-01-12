@@ -1,0 +1,44 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { validationSchema } from '../../../libs/common-barber/src/validation/validation.schema';
+import { jwtConfig, mongoConfig } from '../../../libs/common-barber/src/configs';
+// import { UserModule } from './user/user.module';
+import { AuthModule } from './resource/auth/auth.module';
+import { BarberModule } from './resource/barber/barber.module';
+import { AppoitmentModule } from './resource/appoitment/appoitment.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: validationSchema,
+      load: [mongoConfig, jwtConfig],
+    }),
+    MongooseModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const mongo = config.get('mongo');
+        if (!mongo) {
+          throw new Error('Mongo config not found');
+        }
+        return {
+          uri: mongo.uri,
+          dbName: mongo.dbName,
+          retryAttempts: 5,
+          retryDelay: 3000,
+          serverSelectionTimeoutMS: 5000,
+        };
+      },
+    }),
+    AuthModule,
+    BarberModule,
+    AppoitmentModule
+    // UserModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService,],
+})
+export class AppModule { }

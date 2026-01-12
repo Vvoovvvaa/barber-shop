@@ -1,8 +1,41 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/best-barber/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/best-barber/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/best-barber",
+  "projects": {
+    "barber-admin": {
+      "type": "application",
+      "root": "apps/barber-admin",
+      "entryFile": "main",
+      "sourceRoot": "apps/barber-admin/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/barber-admin/tsconfig.app.json"
+      }
+    },
+    "best-barber": {
+      "type": "application",
+      "root": "apps/best-barber",
+      "entryFile": "main",
+      "sourceRoot": "apps/best-barber/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/best-barber/tsconfig.app.json"
+      }
+    },
+    "common-barber": {
+      "type": "library",
+      "root": "libs/common-barber",
+      "entryFile": "index",
+      "sourceRoot": "libs/common-barber/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common-barber/tsconfig.lib.json"
+      }
+    }
   }
 }
