@@ -5,5 +5,6 @@ export const jwtConfig = registerAs("JWT_CONFIG", () => {
     tempSecret: process.env.JWT_SECRET2!,
     expiresIn: Number(process.env.JWT_EXPIRES_IN),
     secret: process.env.JWT_SECRET!,
+    admin: process.env.JWT_ADMIN
   };
 });

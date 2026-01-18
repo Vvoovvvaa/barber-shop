@@ -4,11 +4,11 @@ import { BarberAdminService } from './barber-admin.service';
 import { validationSchema, mongoConfig, jwtConfig } from '@app/common-barber';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from 'apps/best-barber/src/app.controller';
-import { AppService } from 'apps/best-barber/src/app.service';
-import { AppoitmentModule } from 'apps/best-barber/src/resource/appoitment/appoitment.module';
-import { AuthModule } from 'apps/best-barber/src/resource/auth/auth.module';
-import { BarberModule } from 'apps/best-barber/src/resource/barber/barber.module';
+
+
+import { AuthModule } from './resource/auth/auth.module';
+
+
 
 @Module({
   imports: [
@@ -34,9 +34,6 @@ import { BarberModule } from 'apps/best-barber/src/resource/barber/barber.module
       },
     }),
     AuthModule,
-    BarberModule,
-    AppoitmentModule
-    // UserModule,
   ],
   controllers: [BarberAdminController],
   providers: [BarberAdminService],
