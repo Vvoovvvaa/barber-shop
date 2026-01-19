@@ -6,24 +6,13 @@ import { JwtModule, JwtModuleOptions, JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { Admin, AdminSchema, IJWTConfig } from '@app/common-barber'; 
+import { AdminSecurity, AdminSecuritySchema } from '@app/common-barber/database/schemas/admin-security';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService): JwtModuleOptions => {
-        const jwt = config.get<IJWTConfig>('JWT_CONFIG');
-        if (!jwt) {
-          throw new Error('JWT_CONFIG not found');
-        }
-        return {
-          secret: jwt.admin,
-          signOptions: { expiresIn: jwt.expiresIn },
-        };
-      },
-    }),
     MongooseModule.forFeature([
       { name: Admin.name, schema: AdminSchema },
+      { name: AdminSecurity.name, schema: AdminSecuritySchema}
     ]),
   ],
   controllers: [AuthController],

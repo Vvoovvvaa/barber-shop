@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { AdminAuthGuard } from '@app/common-barber/guard/admin-guard';
-import { AuthUser, GetUser } from '@app/common-barber';
+import { AuthUser } from '@app/common-barber';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +29,19 @@ export class AuthController {
   }
 
   @UseGuards(AdminAuthGuard)
+  @Post('cancel/:id')
+  cancleBlock(@Param('id' ) adminid: string, @AuthUser('id') id:string){
+    return this.authService.blockCancel(adminid,id)
+  }
+
+  @UseGuards(AdminAuthGuard)
+  @Post('block/:id')
+  blockAdmin(@Param('id') adminid:string, @AuthUser('id') id:string){
+    return this.authService.blockAdmin(adminid,id)
+  }
+
+
+  @UseGuards(AdminAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
@@ -42,7 +55,7 @@ export class AuthController {
 
   @UseGuards(AdminAuthGuard)
   @Delete(':id')
-  remove(@AuthUser('id') userId: string,@Param('id')adminId:string) {
+  remove(@AuthUser('id') userId: string,@Param('id') adminId:string) {
     return this.authService.removeAdmin(userId,adminId);
   }
 }
