@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppoitmentService } from './appoitment.service';
+import { AppointmentService } from './appoitment.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Appointment, AppointmentSchema, Barber, BarberSchema, User,UserSchema } from '@app/common-barber/database/schemas';
 import { AppoitmentController } from './appoitment.controller';
 import { AuthModule } from '../auth/auth.module';
+import { BarberService } from '../barber/barber.service';
+import { BarberServiceSchema } from '@app/common-barber/database/schemas/barber-service';
 
 @Module({
   imports: [
@@ -11,10 +13,10 @@ import { AuthModule } from '../auth/auth.module';
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
       { name: User.name, schema: UserSchema},
-      { name: Barber.name, schema:BarberSchema}
+      { name: BarberService.name, schema:BarberServiceSchema}
     ]),
   ],
   controllers: [AppoitmentController],
-  providers: [AppoitmentService],
+  providers: [AppointmentService],
 })
 export class AppoitmentModule {}

@@ -6,7 +6,7 @@ import { AdminAuthGuard } from '@app/common-barber/guard/admin-guard';
 
 @Controller('admins')
 export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminsService) { }
 
   @UseGuards(AdminAuthGuard)
   @Get()
@@ -16,19 +16,29 @@ export class AdminsController {
 
   @UseGuards(AdminAuthGuard)
   @Post('cancel/:id')
-  cancleBlock(@Param('id' ) adminid: string, @AuthUser('id') id:string){
-    return this.adminsService.blockCancel(adminid,id)
+  cancleBlock(@Param('id') adminid: string, @AuthUser('id') id: string) {
+    return this.adminsService.blockCancel(adminid, id)
   }
 
   @UseGuards(AdminAuthGuard)
   @Post('block/:id')
-  blockAdmin(@Param('id') adminid:string, @AuthUser('id') id:string){
-    return this.adminsService.blockAdmin(adminid,id)
+  blockAdmin(@Param('id') adminid: string, @AuthUser('id') id: string) {
+    return this.adminsService.blockAdmin(adminid, id)
   }
 
   @UseGuards(AdminAuthGuard)
   @Delete(':id')
-  remove(@AuthUser('id') userId: string,@Param('id') adminId:string) {
-    return this.adminsService.removeAdmin(userId,adminId);
+  removeAdmins(
+    @Param('id') adminToDeleteId: string,
+    @AuthUser('id') deleterId: string,
+  ) {
+    return this.adminsService.removeAdmin(adminToDeleteId.trim(), deleterId.trim());
   }
+
+  @UseGuards(AdminAuthGuard)
+  @Delete('user/:id')
+  removeUser(@Param('id') userId: string, @AuthUser('id') adminId: string) {
+    return this.adminsService.deleteUser(userId, adminId)
+  }
+
 }

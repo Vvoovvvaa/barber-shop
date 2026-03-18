@@ -8,16 +8,20 @@ export class Appointment {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   client: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Barber', required: true })
   barber: Types.ObjectId;
 
-  @Prop({ required: true })
-  services: string;
+  @Prop({ type: Types.ObjectId, ref: 'BarberService', required: true })
+  service: Types.ObjectId; 
 
   @Prop({ required: true })
   startTime: Date;
 
-  @Prop({ type:String, enum: Object.values(AppointmentStatus), default: AppointmentStatus.PENDING })
+  @Prop({
+    type: String,
+    enum: Object.values(AppointmentStatus),
+    default: AppointmentStatus.PENDING
+  })
   status: AppointmentStatus;
 }
 

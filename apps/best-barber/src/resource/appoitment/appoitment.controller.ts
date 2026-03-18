@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Delete, Param, Patch, UseGuards } from '@nestjs/common';
-import { AppoitmentService } from './appoitment.service';
+import { AppointmentService } from './appoitment.service';
 import { AuthUser } from '@app/common-barber';
 import { AuthGuard } from '@app/common-barber';
 import { CreateAppointmentDto } from './dto/appoitment.dto';
@@ -9,7 +9,7 @@ import { IdDto } from '@app/common-barber/dto/parap-id.dto';
 @UseGuards(AuthGuard)
 @Controller('appointment')
 export class AppoitmentController {
-  constructor(private readonly appointmentService: AppoitmentService) { }
+  constructor(private readonly appointmentService: AppointmentService) { }
 
   @Post()
   async createAppointment(@AuthUser('id') id: string, @Body() dto: CreateAppointmentDto) {
