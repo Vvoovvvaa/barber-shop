@@ -11,6 +11,7 @@ import { BarberModule } from './resource/barber/barber.module';
 import { AppoitmentModule } from './resource/appoitment/appoitment.module';
 import { IJWTConfig } from '@app/common-barber';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
+import { S3Module } from '@app/common-barber/s3';
 
 @Module({
   imports: [
@@ -51,7 +52,8 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
     }),
     AuthModule,
     BarberModule,
-    AppoitmentModule
+    AppoitmentModule,
+    S3Module
     // UserModule,
   ],
   controllers: [AppController],

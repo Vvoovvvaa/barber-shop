@@ -41,4 +41,10 @@ export class AdminsController {
     return this.adminsService.deleteUser(userId, adminId)
   }
 
+  @UseGuards(AdminAuthGuard)
+  @Delete('service/:id')
+  deleteService(@Param('id') serviceId: string){
+    return this.adminsService.deleteBarberService(serviceId)
+  }
+
 }

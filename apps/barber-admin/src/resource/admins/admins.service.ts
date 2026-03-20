@@ -138,7 +138,6 @@ async removeAdmin(adminToDeleteId: string, deleterId: string) {
   }
 
   
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 async deleteBarberService(serviceId: string) {
   const service = await this.barberModel.findById(serviceId);
 
@@ -147,13 +146,11 @@ async deleteBarberService(serviceId: string) {
   }
 
   await this.appointmentModel.deleteMany({
-    service: service._id,
+    service: String(service._id),
   });
 
- 
   await this.barberModel.findByIdAndDelete(service._id);
 
   return { message: 'Service and related appointments deleted' };
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

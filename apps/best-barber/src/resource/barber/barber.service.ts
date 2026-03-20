@@ -5,6 +5,10 @@ import { status } from "@app/common-barber/database/enums";
 import { Barber, User } from "@app/common-barber/database/schemas";
 import { CreateBarberServiceDto } from "./dto/create-barber.dto";
 import { UpdateBarberServiceDto } from "./dto/update-barber.dto";
+import { v4 as uuid } from 'uuid'
+import { S3Service } from "@app/common-barber/s3";
+import { UserImage } from "@app/common-barber/database/schemas/s3-image";
+
 
 @Injectable()
 export class BarberService {
@@ -12,7 +16,10 @@ export class BarberService {
     @InjectModel(Barber.name)
     private readonly barberModel: Model<Barber>,
     @InjectModel(User.name)
-    private readonly userModel: Model<User>
+    private readonly userModel: Model<User>,
+    @InjectModel(UserImage.name)
+    private readonly imageModel: Model<UserImage>,
+    private readonly s3service: S3Service
   ) { }
 
   async changeStatus(userId: string) {
@@ -30,7 +37,23 @@ export class BarberService {
     return await user.save();
   }
 
-  async barberServices(userId: string, dto: CreateBarberServiceDto) {
+
+
+  private async handleImageUpload(userId: string, file: Express.Multer.File) {
+    const fileExtension = file.originalname.split('.').pop();
+    const fileName = `${uuid()}.${fileExtension}`;
+    const filePath = `Vova/BarberShop/Barbers/${userId}/${fileName}`;
+
+    await this.s3service.putObject(file.buffer, filePath, file.mimetype);
+
+    return this.imageModel.findOneAndUpdate(
+      { user: userId },
+      { path: filePath, size: file.size },
+      { upsert: true, new: true }
+    );
+  }
+
+  async barberServices(userId: string, dto: CreateBarberServiceDto, file?: Express.Multer.File) {
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -40,16 +63,24 @@ export class BarberService {
       throw new ForbiddenException('Only barbers can add services');
     }
 
+
     const barberService = await this.barberModel.create({
-      user: user._id,        
+      user: user._id,
       description: dto.description,
       services: dto.services,
       workingHours: dto.workingHours,
       experience: dto.experience || 0,
+
     });
 
-    return barberService;
+
+    if (file) {
+      await this.handleImageUpload(userId, file)
+    }
+
+    return  barberService ;
   }
+
 
 
   async findAllBarbers() {
@@ -71,16 +102,20 @@ export class BarberService {
   }
 
 
-  async createService(userId: string, dto: CreateBarberServiceDto) {
-    return this.barberModel.create({ user: userId, ...dto })
-  }
+  // async createService(userId: string, dto: CreateBarberServiceDto) {
+  //   return this.barberModel.create({ user: userId, ...dto })
+  // }
 
 
-  async updateService(userId: string, dto: UpdateBarberServiceDto) {
+  async updateService(userId: string, dto: UpdateBarberServiceDto,file?: Express.Multer.File) {
     const service = await this.barberModel.findOne({ user: userId })
 
     if (!service) {
       throw new NotFoundException('service not found')
+    }
+
+    if(file){
+      await this.handleImageUpload(userId,file)
     }
 
     return this.barberModel.findOneAndUpdate({ _id: service._id }, dto, { new: true })
@@ -94,7 +129,7 @@ export class BarberService {
     }
 
     await this.barberModel.findOneAndDelete({ _id: service._id })
-    return {message:"Service succesful deleted"}
+    return { message: "Service succesful deleted" }
   }
 
 
