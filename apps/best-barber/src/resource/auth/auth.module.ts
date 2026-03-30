@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Auth, AuthSessionSchema, User, UserSchema, userSecurity, userSecuritySchema } from '@app/common-barber/database/schemas';
 import { AuthGuard } from '@app/common-barber';
+import { RedisModule} from '@app/redis';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { AuthGuard } from '@app/common-barber';
       { name: Auth.name, schema: AuthSessionSchema },
       { name: User.name, schema: UserSchema },
       { name: userSecurity.name, schema: userSecuritySchema }
-    ]),
+    ]),RedisModule,
   ],
   providers: [AuthService, AuthGuard],
   controllers: [AuthController],

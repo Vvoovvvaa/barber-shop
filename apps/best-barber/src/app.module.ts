@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validationSchema } from '../../../libs/common-barber/src/validation/validation.schema';
-import { jwtConfig, mongoConfig } from '../../../libs/common-barber/src/configs';
+import { jwtConfig, mongoConfig, redisConfig } from '../../../libs/common-barber/src/configs';
 // import { UserModule } from './user/user.module';
 import { AuthModule } from './resource/auth/auth.module';
 import { BarberModule } from './resource/barber/barber.module';
@@ -12,13 +12,14 @@ import { AppoitmentModule } from './resource/appoitment/appoitment.module';
 import { IJWTConfig } from '@app/common-barber';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { S3Module } from '@app/common-barber/s3';
+import { RedisModule, RedisService, TokenService } from '@app/redis';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: validationSchema,
-      load: [mongoConfig, jwtConfig],
+      load: [mongoConfig, jwtConfig,redisConfig],
     }),
     JwtModule.registerAsync({
       global:true,
@@ -53,10 +54,11 @@ import { S3Module } from '@app/common-barber/s3';
     AuthModule,
     BarberModule,
     AppoitmentModule,
-    S3Module
+    S3Module,
+    RedisModule
     // UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService,],
+  providers: [AppService],
 })
 export class AppModule { }

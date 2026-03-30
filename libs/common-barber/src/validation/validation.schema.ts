@@ -12,4 +12,11 @@ export const validationSchema = Joi.object({
   SECRETACCESSKEY: Joi.string().required(),
   REGION: Joi.string().required(),
   BUCKET: Joi.string().required(),
+  REDIS_HOST: Joi.string().required(),
+  REDIS_PORT: Joi.number().required(),
+  REDIS_PASSWORD: Joi.number().required(),
+  REDIS_DB: Joi.number().required()
+
 });
+
+

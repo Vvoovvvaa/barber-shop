@@ -28,6 +28,15 @@
         "tsConfigPath": "apps/best-barber/tsconfig.app.json"
       }
     },
+    "cache": {
+      "type": "library",
+      "root": "libs/cache",
+      "entryFile": "index",
+      "sourceRoot": "libs/cache/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cache/tsconfig.lib.json"
+      }
+    },
     "common-barber": {
       "type": "library",
       "root": "libs/common-barber",
@@ -35,6 +44,15 @@
       "sourceRoot": "libs/common-barber/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common-barber/tsconfig.lib.json"
+      }
+    },
+    "redis": {
+      "type": "library",
+      "root": "libs/redis",
+      "entryFile": "index",
+      "sourceRoot": "libs/redis/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/redis/tsconfig.lib.json"
       }
     }
   }

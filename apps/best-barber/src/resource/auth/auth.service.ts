@@ -14,6 +14,7 @@ import { Auth, AuthSessionDocument, User } from '@app/common-barber/database/sch
 import { createRandomCode } from '@app/common-barber';
 import { IJWTConfig } from '@app/common-barber';
 import { userSecurity } from '@app/common-barber/database/schemas/user-security';
+import {v4 as uuidv4} from 'uuid'
 
 @Injectable()
 export class AuthService {
@@ -95,8 +96,10 @@ export class AuthService {
 
   async login(phone: string, code: string) {
     const session = await this.authSessionModel
-      .findOne({ phone })
+      .findOne({ phone,code })
       .sort({ createdAt: -1 });
+      console.log(session)
+      console.log('LOGIN PHONE:', phone);
 
     if (!session || session.expiresAt < new Date()) {
       throw new UnauthorizedException('Invalid or expired code');

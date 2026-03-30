@@ -1,55 +1,69 @@
-import {CanActivate,ExecutionContext,Injectable,UnauthorizedException,} from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { JwtPayload } from './models';
-import { IJWTConfig } from '../models';
+import { TokenService } from '@app/redis';
 
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private jwtConfig: IJWTConfig;
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {
-    this.jwtConfig = this.configService.get("JWT_CONFIG") as IJWTConfig
-  }
+    private readonly tokenService: TokenService,
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers['authorization'];
+    const req = context.switchToHttp().getRequest();
+    const auth = req.headers.authorization;
 
-    if (!authHeader) {
-      throw new UnauthorizedException('You are not authorized, please login');
-    }
+    if (!auth) throw new UnauthorizedException('No token');
 
-    const [bearer, token] = authHeader.trim().split(' ');
+    const [, token] = auth.split(' ');
 
-    if (bearer.toLowerCase() !== 'bearer' || !token) {
-      throw new UnauthorizedException('Invalid authorization header format');
-    }
+    let payload: any;
 
-    let payload: JwtPayload;
-    
     try {
       payload = this.jwtService.verify(token, {
-        secret: this.jwtConfig.secret,
+        secret: this.configService.get('JWT_CONFIG').tempSecret,
       });
-    } catch (err1) {
-      try {
-        payload = this.jwtService.verify(token, {
-          secret: this.jwtConfig.tempSecret,
-        });
-      } catch (err2) {
-        throw new UnauthorizedException('User is not authorized');
-      }
+
+      if (!payload.temp) throw new Error();
+
+      req.tempSession = {
+        sessionId: payload.sub,
+        phone: payload.phone,
+      };
+
+      return true;
+    } catch { }
+
+    try {
+      payload = this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_CONFIG').secret,
+      });
+    } catch {
+      throw new UnauthorizedException('Token invalid');
     }
 
-    request.user = {
+    const isRevoked = await this.tokenService.isTokenRevoked(
+      payload.sub,
+      payload.iat,
+    );
+
+    if (isRevoked) {
+      throw new UnauthorizedException('Token revoked');
+    }
+
+    req.user = {
       id: payload.sub,
+      role: payload.role,
       phone: payload.phone,
-      temp: payload.temp ?? false,
     };
 
     return true;

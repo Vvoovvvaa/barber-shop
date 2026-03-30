@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { BarberOrClientDTO } from './dto/create-auth.dto';
 import { AuthGuard } from '@app/common-barber';
@@ -8,7 +8,7 @@ import { AuthUser } from '@app/common-barber';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('register')
   async sendCode(@Body() dto: BarberOrClientDTO) {

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 
 import { AdminsService } from './admins.service';
-import { AuthUser } from '@app/common-barber';
+import { AuthUser, IdDto } from '@app/common-barber';
 import { AdminAuthGuard } from '@app/common-barber/guard/admin-guard';
 
 @Controller('admins')
@@ -37,8 +37,8 @@ export class AdminsController {
 
   @UseGuards(AdminAuthGuard)
   @Delete('user/:id')
-  removeUser(@Param('id') userId: string, @AuthUser('id') adminId: string) {
-    return this.adminsService.deleteUser(userId, adminId)
+  removeUser(@Param('id') userId: IdDto) {
+    return this.adminsService.deleteUser(String(userId))
   }
 
   @UseGuards(AdminAuthGuard)
