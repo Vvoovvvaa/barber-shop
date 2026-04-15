@@ -2,10 +2,14 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
 import { User } from "./user";
 
-@Schema({ timestamps: true})
-export class userSecurity {
+@Schema({ timestamps: true })
+export class UserSecurity {
+
   @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   user: Types.ObjectId;
+
+  @Prop({ default: null })
+  email?: string;
 
   @Prop({ default: null })
   temporaryBlockUntil?: Date;
@@ -20,4 +24,4 @@ export class userSecurity {
   temporaryBlocksCount: number;
 }
 
-export const userSecuritySchema = SchemaFactory.createForClass(userSecurity);
+export const UserSecuritySchema = SchemaFactory.createForClass(UserSecurity);

@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Admin, AdminSecurity, Appointment, Barber, User, userSecurity } from '@app/common-barber';
+import { Admin, AdminSecurity, Appointment, Barber, User, UserSecurity } from '@app/common-barber';
 import { Model, Types } from 'mongoose';
 import { TokenService } from '@app/redis';
 import { NotFound } from '@aws-sdk/client-s3';
@@ -18,8 +18,8 @@ export class AdminsService {
     private readonly barberModel: Model<Barber>,
     @InjectModel(Appointment.name)
     private readonly appointmentModel: Model<Appointment>,
-    @InjectModel(userSecurity.name)
-    private readonly usersecurity: Model<userSecurity>,
+    @InjectModel(UserSecurity.name)
+    private readonly usersecurity: Model<UserSecurity>,
     private readonly tokenservice: TokenService
   ) { }
 

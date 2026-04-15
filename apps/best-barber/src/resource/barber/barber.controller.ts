@@ -13,7 +13,7 @@ import { FileInterceptor } from "@nestjs/platform-express"
 export class BarberController {
   constructor(private readonly barbersService: BarberService) { }
 
-  @Post('create')
+  @Post('change')
   async createBarber(@AuthUser('id') id: string) {
     return this.barbersService.changeStatus(id)
   }

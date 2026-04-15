@@ -13,7 +13,7 @@ import { BarberOrClientDTO } from './dto/create-auth.dto';
 import { Auth, AuthSessionDocument, User } from '@app/common-barber/database/schemas';
 import { createRandomCode } from '@app/common-barber';
 import { IJWTConfig } from '@app/common-barber';
-import { userSecurity } from '@app/common-barber/database/schemas/user-security';
+import { UserSecurity } from '@app/common-barber/database/schemas';
 import {v4 as uuidv4} from 'uuid'
 
 @Injectable()
@@ -24,8 +24,8 @@ export class AuthService {
     @InjectModel(Auth.name)
     private readonly authSessionModel: Model<AuthSessionDocument>,
 
-    @InjectModel(userSecurity.name)
-    private readonly userSecurityModel: Model<userSecurity>,
+    @InjectModel(UserSecurity.name)
+    private readonly userSecurityModel: Model<UserSecurity>,
 
     @InjectModel(User.name)
     private readonly userModel: Model<User>,

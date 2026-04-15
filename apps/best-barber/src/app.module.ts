@@ -9,18 +9,26 @@ import { jwtConfig, mongoConfig, redisConfig } from '../../../libs/common-barber
 import { AuthModule } from './resource/auth/auth.module';
 import { BarberModule } from './resource/barber/barber.module';
 import { AppoitmentModule } from './resource/appoitment/appoitment.module';
-import { IJWTConfig } from '@app/common-barber';
+import { IJWTConfig, User, UserSchema, UserSecurity, UserSecuritySchema } from '@app/common-barber';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { S3Module } from '@app/common-barber/s3';
 import { RedisModule, RedisService, TokenService } from '@app/redis';
+import { PassportModule } from '@nestjs/passport';
+import { EmailModule } from '@app/common-barber/email/email.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { JwtStrategy } from '@app/common-barber/strategies/jwt.startegy';
+import { GoogleStrategy } from '@app/common-barber/strategies/google.strategy';
+import { smtpConfig } from '@app/common-barber/configs/email-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: validationSchema,
-      load: [mongoConfig, jwtConfig,redisConfig],
+      load: [mongoConfig, jwtConfig,redisConfig,smtpConfig],
     }),
+    PassportModule.register({ defaultStrategy: 'google' }),
+
     JwtModule.registerAsync({
       global:true,
       inject: [ConfigService],
@@ -35,6 +43,12 @@ import { RedisModule, RedisService, TokenService } from '@app/redis';
         };
       },
     }),
+
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: UserSecurity.name, schema: UserSecuritySchema },
+    ]),
+    
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
@@ -55,10 +69,11 @@ import { RedisModule, RedisService, TokenService } from '@app/redis';
     BarberModule,
     AppoitmentModule,
     S3Module,
-    RedisModule
+    RedisModule,
+    EmailModule
     // UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,JwtStrategy,GoogleStrategy],
 })
 export class AppModule { }

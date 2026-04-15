@@ -10,6 +10,7 @@ import { AuthModule } from './resource/auth/auth.module';
 import { AdminsModule } from './resource/admins/admins.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { RedisModule, TokenService } from '@app/redis';
+import { EmailModule } from './common/email/email.module';
 
 
 
@@ -52,7 +53,8 @@ import { RedisModule, TokenService } from '@app/redis';
     }),
     AuthModule,
     AdminsModule,
-    RedisModule
+    RedisModule,
+    EmailModule
   ],
   controllers: [BarberAdminController],
   providers: [BarberAdminService],

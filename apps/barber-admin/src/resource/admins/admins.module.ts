@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AdminsService } from './admins.service';
 import { AdminsController } from './admins.controller';
-import { Admin, AdminSchema, AdminSecurity, AdminSecuritySchema, Appointment, AppointmentSchema, Barber, BarberSchema, User, UserSchema, userSecurity, userSecuritySchema } from '@app/common-barber';
+import { Admin, AdminSchema, AdminSecurity, AdminSecuritySchema, Appointment, AppointmentSchema, Barber, BarberSchema, User, UserSchema, UserSecurity, UserSecuritySchema } from '@app/common-barber';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RedisModule, RedisService, TokenService } from '@app/redis';
 import Redis from 'ioredis';
@@ -15,7 +15,7 @@ import Redis from 'ioredis';
       { name: User.name, schema: UserSchema },
       { name: Barber.name, schema: BarberSchema },
       { name: Appointment.name, schema: AppointmentSchema },
-      {name: userSecurity.name, schema: userSecuritySchema}
+      {name: UserSecurity.name, schema: UserSecuritySchema}
     ]),RedisModule
   ],
   controllers: [AdminsController],

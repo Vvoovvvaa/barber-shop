@@ -1,12 +1,16 @@
 export class CreateAuthDto {}
-import { IsEnum, IsNotEmpty, IsPhoneNumber } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsPhoneNumber } from "class-validator";
 import { status } from "@app/common-barber/database/enums";
 
 export class BarberOrClientDTO {
 
     @IsNotEmpty()
     @IsPhoneNumber()
-    phone : string
+    phone: string
+
+    @IsOptional()
+    @IsEmail()
+    email?: string
 
     // @IsEnum({enum:status})
     // @IsNotEmpty()

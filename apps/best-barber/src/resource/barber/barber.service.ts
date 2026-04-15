@@ -8,6 +8,7 @@ import { UpdateBarberServiceDto } from "./dto/update-barber.dto";
 import { v4 as uuid } from 'uuid'
 import { S3Service } from "@app/common-barber/s3";
 import { UserImage } from "@app/common-barber/database/schemas/s3-image";
+import { SenderService } from "@app/common-barber/email/sender.service";
 
 
 @Injectable()
@@ -19,7 +20,8 @@ export class BarberService {
     private readonly userModel: Model<User>,
     @InjectModel(UserImage.name)
     private readonly imageModel: Model<UserImage>,
-    private readonly s3service: S3Service
+    private readonly s3service: S3Service,
+    private readonly senderservice: SenderService
   ) { }
 
   async changeStatus(userId: string) {
@@ -30,6 +32,19 @@ export class BarberService {
 
     if (user.role === status.CLIENT) {
       user.role = status.BARBER;
+    }
+
+    if (user.email) {
+      await this.senderservice.sendEmail({
+        to: user.email,
+        from: process.env.SMTP_FROM || 'no-reply@example.com',
+        subject: 'role updated',
+        template: 'role-change',
+        context: {
+          name: user.name || 'Пользователь',
+          role: status.BARBER
+        },
+      });
     }
 
     Object.assign(user);
@@ -78,7 +93,7 @@ export class BarberService {
       await this.handleImageUpload(userId, file)
     }
 
-    return  barberService ;
+    return barberService;
   }
 
 
@@ -107,15 +122,15 @@ export class BarberService {
   // }
 
 
-  async updateService(userId: string, dto: UpdateBarberServiceDto,file?: Express.Multer.File) {
+  async updateService(userId: string, dto: UpdateBarberServiceDto, file?: Express.Multer.File) {
     const service = await this.barberModel.findOne({ user: userId })
 
     if (!service) {
       throw new NotFoundException('service not found')
     }
 
-    if(file){
-      await this.handleImageUpload(userId,file)
+    if (file) {
+      await this.handleImageUpload(userId, file)
     }
 
     return this.barberModel.findOneAndUpdate({ _id: service._id }, dto, { new: true })
