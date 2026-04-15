@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { AppointmentStatus } from '../enums';
+import { AppointmentStatus, endOrder } from '../enums';
+import { BarberService } from './barber-service';
 
 @Schema({ timestamps: true })
 export class Appointment {
@@ -8,7 +9,7 @@ export class Appointment {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   client: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Barber', required: true })
+  @Prop({ type: Types.ObjectId, ref: BarberService.name, required: true })
   barber: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: 'BarberService', required: true })
@@ -23,6 +24,10 @@ export class Appointment {
     default: AppointmentStatus.PENDING
   })
   status: AppointmentStatus;
+
+  @Prop({type:String,enum: endOrder,default:null})
+  end: endOrder | null
+
 }
 
 

@@ -1,8 +1,15 @@
-import { Type } from "class-transformer";
-import { IsDate, IsNotEmpty } from "class-validator";
+import { IsDate, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+
 
 export class CreateAppointmentDto {
-  serviceId: string;
-  startTime: Date;
-}
+  @IsNotEmpty()
+  barberId!: string;
 
+  @IsNotEmpty()
+  service!: string;
+
+  @Type(() => Date)
+  @IsDate()
+  date!: Date;
+}

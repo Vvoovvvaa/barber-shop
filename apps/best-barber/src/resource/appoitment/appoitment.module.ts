@@ -6,14 +6,16 @@ import { AppoitmentController } from './appoitment.controller';
 import { AuthModule } from '../auth/auth.module';
 import { BarberService } from '../barber/barber.service';
 import { BarberServiceSchema } from '@app/common-barber/database/schemas/barber-service';
+import { EmailModule } from '@app/common-barber/email/email.module';
 
 @Module({
   imports: [
     AuthModule,
+    EmailModule,
     MongooseModule.forFeature([
       { name: Appointment.name, schema: AppointmentSchema },
       { name: User.name, schema: UserSchema},
-      { name: BarberService.name, schema:BarberServiceSchema}
+      { name: BarberService.name, schema:BarberServiceSchema},
     ]),
   ],
   controllers: [AppoitmentController],
