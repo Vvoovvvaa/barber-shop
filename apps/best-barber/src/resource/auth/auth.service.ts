@@ -19,6 +19,7 @@ import {
 import { createRandomCode } from '@app/common-barber';
 import { IJWTConfig } from '@app/common-barber';
 import { SenderService } from '@app/common-barber/email/sender.service';
+import { buildQuery } from '@app/common-barber';
 
 @Injectable()
 export class AuthService {
@@ -37,20 +38,19 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
 
-    private readonly senderservice: SenderService
+    private readonly senderservice: SenderService,
   ) {
     this.jwtConfig = this.configService.get('JWT_CONFIG') as IJWTConfig;
   }
 
-  // 🔥 helper — единая логика выбора поля
-  private buildQuery(email?: string, phone?: string) {
-    if (email) return { email };
-    if (phone) return { phone };
-    throw new BadRequestException('Email or phone is required');
-  }
+  // private buildQuery(email?: string, phone?: string) {
+  //   if (email) return { email };
+  //   if (phone) return { phone };
+  //   throw new BadRequestException('Email or phone is required');
+  // }
 
   async registration(dto: BarberOrClientDTO) {
-    const query = this.buildQuery(dto.email, dto.phone);
+    const query = buildQuery(dto.email, dto.phone);
 
     let user = await this.userModel.findOne(query);
 
@@ -132,7 +132,7 @@ export class AuthService {
   }
 
   async login(phone?: string, email?: string, code: string) {
-    const query = this.buildQuery(email, phone);
+    const query = buildQuery(email, phone);
 
     const session = await this.authSessionModel
       .findOne({
