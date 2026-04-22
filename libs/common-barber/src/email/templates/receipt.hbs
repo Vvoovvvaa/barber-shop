@@ -2,126 +2,145 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f7;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #333333;
+    .card:hover {
+      border-color:#4f46e5 !important;
+      box-shadow:0 12px 40px rgba(0,0,0,0.6) !important;
     }
 
-    .wrapper {
-      width: 100%;
-      padding: 40px 0;
-      background-color: #f4f4f7;
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-
-    .header {
-      background: #111827;
-      padding: 28px;
-      text-align: center;
-      color: #ffffff;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    .content {
-      padding: 35px 30px;
-      line-height: 1.7;
-    }
-
-    .content h2 {
-      margin-top: 0;
-      font-size: 22px;
-      color: #111827;
-    }
-
-    .price-box {
-      margin: 25px 0;
-      background: #f9fafb;
-      border: 2px dashed #d1d5db;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .price-label {
-      font-size: 14px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
-    .price-value {
-      font-size: 32px;
-      font-weight: bold;
-      color: #16a34a;
-    }
-
-    .footer {
-      padding: 20px;
-      text-align: center;
-      font-size: 13px;
-      color: #9ca3af;
-      background: #f9fafb;
-    }
-
-    .thank-you {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #111827;
+    .contact-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
     }
   </style>
+
 </head>
 
-<body>
-  <div class="wrapper">
-    <div class="container">
+<body style="margin:0; padding:0; background:#0b0d12; font-family:Arial, Helvetica, sans-serif;">
 
-      <div class="header">
-        <h1>Service Receipt</h1>
-      </div>
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:50px 0;">
+    <tr>
+      <td align="center">
 
-      <div class="content">
-        <h2>Hello, {{name}} 👋</h2>
+        <table class="card" width="520" cellpadding="0" cellspacing="0"
+          style="background:#141821; border-radius:16px; border:1px solid #262b36; overflow:hidden; transition:all 0.3s ease;">
 
-        <p>
-          Thank you for choosing our service. Your appointment has been successfully completed.
-        </p>
+          <!-- Top Accent -->
+          <tr>
+            <td style="height:4px; background:linear-gradient(90deg,#4f46e5,#16a34a,#4f46e5);"></td>
+          </tr>
 
-        <div class="price-box">
-          <div class="price-label">Total Amount</div>
-          <div class="price-value">֏{{price}}</div>
-        </div>
+          <!-- Header -->
+          <tr>
+            <td style="padding:26px; text-align:center;">
+              <h2 style="margin:0; font-size:20px; color:#ffffff;">
+                Service Receipt
+              </h2>
+            </td>
+          </tr>
 
-        <p>
-          We truly appreciate your trust and look forward to seeing you again soon.
-        </p>
+          <!-- GIF -->
+          <tr>
+            <td align="center" style="padding:10px 0;">
+              <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
+                   width="100"
+                   style="border-radius:10px; opacity:0.9;" />
+            </td>
+          </tr>
 
-        <p class="thank-you">
-          Thanks for being with us!
-        </p>
-      </div>
+          <!-- Content -->
+          <tr>
+            <td style="padding:30px 34px; text-align:center; color:#cbd5e1;">
 
-      <div class="footer">
-        © 2026 Your Company. All rights reserved.
-      </div>
+              <h3 style="margin:0 0 10px; font-size:18px; color:#ffffff;">
+                Hello, {{name}}
+              </h3>
 
-    </div>
-  </div>
+              <p style="font-size:14px; color:#8b95a7; line-height:1.6;">
+                Your appointment has been successfully completed.
+              </p>
+
+              <!-- PRICE -->
+              <div style="margin:28px 0; padding:22px;
+                background:#0b0d12;
+                border:1px dashed #2a2f3a;
+                border-radius:14px;">
+
+                <p style="margin:0; font-size:12px; color:#6b7280; letter-spacing:1px;">
+                  TOTAL AMOUNT
+                </p>
+
+                <p style="margin:10px 0 0; font-size:30px; font-weight:700;
+                  background:linear-gradient(90deg,#16a34a,#22c55e);
+                  -webkit-background-clip:text;
+                  -webkit-text-fill-color:transparent;">
+                  ֏{{price}}
+                </p>
+
+              </div>
+
+              <p style="font-size:14px; color:#9aa4b2;">
+                We appreciate your trust and look forward to serving you again.
+              </p>
+
+              <!-- Button -->
+              <a href="#"
+                 class="btn"
+                 style="display:inline-block; margin-top:18px; padding:12px 26px;
+                 background:#4f46e5; color:#fff; text-decoration:none;
+                 border-radius:10px; font-size:14px; font-weight:600;">
+                 View Details →
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- CONTACTS -->
+          <tr>
+            <td align="center" style="padding:25px 20px;">
+
+              <p style="margin:0 0 10px; font-size:12px; color:#6b7280; letter-spacing:1px;">
+                CONTACT
+              </p>
+
+              <a href="https://t.me/Vov_Markosyan"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:10px 18px;
+                 background:#229ED9; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:13px; font-weight:600;">
+                 Telegram
+              </a>
+
+              <a href="https://www.instagram.com/vov_markosyann/"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:10px 18px;
+                 background:#E1306C; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:13px; font-weight:600;">
+                 Instagram
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="text-align:center; padding:18px; font-size:12px;
+              color:#6b7280; border-top:1px solid #262b36;">
+              © {{year}} Your Company
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>

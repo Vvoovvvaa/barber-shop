@@ -21,8 +21,8 @@ export class User {
   @Prop({ default: true })
   isActivate: boolean;
 
-  @Prop({ unique: true, sparse: true })
-  email?: string;
+  @Prop({ unique: true, sparse: true})
+  email: string;
 
   @Prop()
   googleId?: string;

@@ -7,6 +7,7 @@ import { BarberService } from "./barber.service"
 import { IdDto } from "@app/common-barber/dto/parap-id.dto"
 import { PhotoValidationPipe } from "@app/common-barber/validator"
 import { FileInterceptor } from "@nestjs/platform-express"
+import { Multer } from "multer"
 import { EndOrderDTO } from "../appoitment/dto/end-order.dto"
 
 @UseGuards(AuthGuard)
@@ -18,7 +19,7 @@ export class BarberController {
   async createBarber(@AuthUser('id') id: string) {
     return this.barbersService.changeStatus(id)
   }
-  
+
   @Get()
   async getAllBarbers() {
     return this.barbersService.findAllBarbers()

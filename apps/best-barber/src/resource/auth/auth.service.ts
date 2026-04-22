@@ -10,11 +10,15 @@ import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 
 import { BarberOrClientDTO } from './dto/create-auth.dto';
-import { Auth, AuthSessionDocument, User } from '@app/common-barber/database/schemas';
+import {
+  Auth,
+  AuthSessionDocument,
+  User,
+  UserSecurity,
+} from '@app/common-barber/database/schemas';
 import { createRandomCode } from '@app/common-barber';
 import { IJWTConfig } from '@app/common-barber';
-import { UserSecurity } from '@app/common-barber/database/schemas';
-import {v4 as uuidv4} from 'uuid'
+import { SenderService } from '@app/common-barber/email/sender.service';
 
 @Injectable()
 export class AuthService {
@@ -32,18 +36,29 @@ export class AuthService {
 
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+
+    private readonly senderservice: SenderService
   ) {
     this.jwtConfig = this.configService.get('JWT_CONFIG') as IJWTConfig;
   }
 
+  // 🔥 helper — единая логика выбора поля
+  private buildQuery(email?: string, phone?: string) {
+    if (email) return { email };
+    if (phone) return { phone };
+    throw new BadRequestException('Email or phone is required');
+  }
+
   async registration(dto: BarberOrClientDTO) {
-    let user = await this.userModel.findOne({ phone: dto.phone });
+    const query = this.buildQuery(dto.email, dto.phone);
+
+    let user = await this.userModel.findOne(query);
 
     if (!user) {
-      user = await this.userModel.create({
-        phone: dto.phone,
-      });
+      user = await this.userModel.create(query);
     }
+
+    console.log("user email -", user.email)
 
     let security = await this.userSecurityModel.findOne({ user: user._id });
 
@@ -52,8 +67,12 @@ export class AuthService {
         user: user._id,
         totalLoginAttempts: 0,
         temporaryBlocksCount: 0,
+        permanentlyBlock: false,
+        email: dto.email ?? null,
       });
     }
+
+    console.log("user ecurity -", security)
 
     if (security.permanentlyBlock) {
       throw new ForbiddenException('Your account has been permanently banned');
@@ -70,14 +89,18 @@ export class AuthService {
 
     const code = createRandomCode().toString();
 
-    const session = await this.authSessionModel.create({
-      phone: dto.phone,
-      code,
-    });
+    const sessionData: any = { code };
+
+    if (dto.email) sessionData.email = dto.email;
+    if (dto.phone) sessionData.phone = dto.phone;
+
+    const session = new this.authSessionModel(sessionData);
+    await session.save()
 
     const tempToken = this.jwtService.sign(
       {
         sub: session._id.toString(),
+        email: dto.email,
         phone: dto.phone,
         temp: true,
       },
@@ -87,6 +110,20 @@ export class AuthService {
       },
     );
 
+    if (user.email) {
+      await this.senderservice.sendEmail({
+        to: user.email,
+        from: process.env.SMTP_FROM || 'no-reply@example.com',
+        subject: "Code Message",
+        template: "code-message",
+        context: {
+          name: user.name || user.email || "User",
+          code:code
+        }
+
+      })
+    }
+
     return {
       message: 'Verification code sent',
       tempToken,
@@ -94,18 +131,22 @@ export class AuthService {
     };
   }
 
-  async login(phone: string, code: string) {
+  async login(phone?: string, email?: string, code: string) {
+    const query = this.buildQuery(email, phone);
+
     const session = await this.authSessionModel
-      .findOne({ phone,code })
+      .findOne({
+        ...query,
+        code,
+      })
       .sort({ createdAt: -1 });
-      console.log(session)
-      console.log('LOGIN PHONE:', phone);
 
     if (!session || session.expiresAt < new Date()) {
       throw new UnauthorizedException('Invalid or expired code');
     }
 
-    const user = await this.userModel.findOne({ phone });
+    const user = await this.userModel.findOne(query);
+    console.log("login user -", user)
 
     if (!user) {
       throw new UnauthorizedException('User not found');
@@ -153,15 +194,15 @@ export class AuthService {
     security.totalLoginAttempts = 0;
     security.temporaryBlockUntil = undefined;
     security.temporaryBlocksCount = 0;
-
     await security.save();
 
-    await this.authSessionModel.deleteMany({ phone });
+    await this.authSessionModel.deleteMany(query);
 
     const token = this.jwtService.sign(
       {
         sub: user._id.toString(),
         phone: user.phone,
+        email: user.email,
         role: user.role,
       },
       {
@@ -170,6 +211,21 @@ export class AuthService {
       },
     );
 
-    return { token, message: `User ${user.phone} succesful login` };
+    if (user.email) {
+      await this.senderservice.sendEmail({
+        to: user.email,
+        from: process.env.SMTP_FROM || 'no-reply@example.com',
+        subject: 'welcome message!',
+        template: 'welcome-email',
+        context: {
+          name: user.name || user.email || 'User',
+        },
+      });
+    }
+
+    return {
+      token,
+      message: `User ${user.name || user.phone || user.email} successful login`,
+    };
   }
 }

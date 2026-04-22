@@ -6,8 +6,11 @@ export type AuthSessionDocument = HydratedDocument<Auth>;
 
 @Schema({ timestamps: true })
 export class Auth {
-    @Prop({ required: true })
-    phone: string;
+    @Prop()
+    phone?: string;
+
+    @Prop()
+    email: string 
 
     @Prop({ type: String, enum: Object.values(status), required: true, default: status.CLIENT })
     status: status;

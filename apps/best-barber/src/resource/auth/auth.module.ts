@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Auth, AuthSessionSchema, User, UserSchema, UserSecurity, UserSecuritySchema } from '@app/common-barber/database/schemas';
 import { AuthGuard } from '@app/common-barber';
 import { RedisModule} from '@app/redis';
+import { EmailModule } from '@app/common-barber/email/email.module';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { RedisModule} from '@app/redis';
       { name: Auth.name, schema: AuthSessionSchema },
       { name: User.name, schema: UserSchema },
       { name: UserSecurity.name, schema: UserSecuritySchema }
-    ]),RedisModule,
+    ]),RedisModule,EmailModule
   ],
   providers: [AuthService, AuthGuard],
   controllers: [AuthController],

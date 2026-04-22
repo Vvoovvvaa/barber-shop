@@ -1,4 +1,134 @@
-< div  class =   " container" > 
-  <h3> Hello  , {{name}} ! </h3> <p>  
-    Thank you for registering with our service. We are happy to welcome you as one of our clients! 
-    </p> </div> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <style>
+    .btn:hover {
+      background-color: #6366f1 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+    }
+
+    .card:hover {
+      border-color: #4f46e5 !important;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.65) !important;
+    }
+
+    .contact-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .glow:hover {
+      text-shadow: 0 0 10px rgba(255,255,255,0.7);
+    }
+
+    .float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
+
+</head>
+
+<body style="margin:0; padding:0; background-color:#0f1115; font-family:Arial, Helvetica, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
+    <tr>
+      <td align="center">
+
+        <table class="card" width="520" cellpadding="0" cellspacing="0"
+          style="background:#171a21; border-radius:14px; border:1px solid #2a2f3a; overflow:hidden;">
+
+          <!-- Accent -->
+          <tr>
+            <td style="height:4px; background:linear-gradient(90deg,#4f46e5,#6366f1,#4f46e5);"></td>
+          </tr>
+
+          <!-- Title -->
+          <tr>
+            <td align="center" style="padding:26px 26px 10px;">
+              <h2 class="glow" style="margin:0; font-size:22px; color:#ffffff;">
+                Welcome, {{name}}
+              </h2>
+            </td>
+          </tr>
+
+          <!-- GIF -->
+          <tr>
+            <td align="center" style="padding:10px 0;">
+              <img class="float"
+                   src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2RlbG9hOXQ2d3g2Z2d1OXA0aG1oY3g2bXU2Z2s0Y2d3eXB6b2V2aCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aD2saalBwwftBIY/giphy.gif"
+                   width="110"
+                   style="border-radius:10px; opacity:0.95;" />
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td align="center" style="padding:20px 34px;">
+
+              <p style="margin:0; font-size:14px; color:#9aa4b2; line-height:1.6;">
+                Your account has been successfully created and is now active.
+              </p>
+
+              <!-- CTA -->
+              <a href="#"
+                 class="btn"
+                 style="display:inline-block; margin-top:20px; padding:12px 26px;
+                 background:#4f46e5; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:14px; font-weight:600;">
+                 Open Dashboard →
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- CONTACTS -->
+          <tr>
+            <td align="center" style="padding:25px 20px;">
+
+              <p style="margin:0 0 10px; font-size:12px; color:#6b7280; letter-spacing:1px;">
+                CONTACT
+              </p>
+
+              <a href="https://t.me/Vov_Markosyan"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:10px 18px;
+                 background:#229ED9; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:13px; font-weight:600;">
+                 Telegram
+              </a>
+
+              <a href="https://www.instagram.com/vov_markosyann/"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:10px 18px;
+                 background:#E1306C; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:13px; font-weight:600;">
+                 Instagram
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding:18px; font-size:12px; color:#6b7280; border-top:1px solid #2a2f3a;">
+              © {{year}} Your Company
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -1,49 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Role Updated</title>
+
+  <style>
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+
+    .contact-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .card:hover {
+      border-color:#4f46e5 !important;
+      box-shadow:0 12px 40px rgba(0,0,0,0.7) !important;
+    }
+  </style>
+
 </head>
 
-<body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, sans-serif;">
+<body style="margin:0; padding:0; background-color:#0b0d12; font-family:Arial, Helvetica, sans-serif;">
 
-  <div style="max-width:600px; margin:40px auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.08);">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:50px 0;">
+    <tr>
+      <td align="center">
 
-    <!-- Header -->
-    <div style="background:linear-gradient(135deg,#4f46e5,#7c3aed); padding:24px; color:#fff; text-align:center;">
-      <h2 style="margin:0; font-size:22px;">Role Update Notification</h2>
-    </div>
+        <table class="card" width="520" cellpadding="0" cellspacing="0"
+          style="background:#141821; border-radius:16px; border:1px solid #262b36; overflow:hidden; transition:all 0.3s ease;">
 
-    <!-- Body -->
-    <div style="padding:30px; color:#333;">
-      
-      <p style="font-size:16px; margin:0 0 12px;">
-        Hello, <strong>{{name}}</strong> 👋
-      </p>
+          <!-- Top Line -->
+          <tr>
+            <td style="height:4px; background:linear-gradient(90deg,#4f46e5,#9333ea,#4f46e5);"></td>
+          </tr>
 
-      <p style="font-size:15px; line-height:1.6; color:#555;">
-        Your role in our system has been updated successfully.
-      </p>
+          <!-- Header -->
+          <tr>
+            <td style="padding:26px; text-align:center;">
+              <h2 style="margin:0; font-size:20px; color:#ffffff;">
+                Role Update Notification
+              </h2>
+            </td>
+          </tr>
 
-      <!-- Highlight box -->
-      <div style="margin:20px 0; padding:16px; background:#f1f5ff; border-left:4px solid #4f46e5; border-radius:8px;">
-        <p style="margin:0; font-size:15px;">
-          New role: <strong style="color:#4f46e5;">{{role}}</strong>
-        </p>
-      </div>
+          <!-- GIF (облегчённый) -->
+          <tr>
+            <td align="center" style="padding:10px 0;">
+              <img src="https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif"
+                   width="100"
+                   style="border-radius:10px; opacity:0.95;" />
+            </td>
+          </tr>
 
-      <p style="font-size:14px; color:#777; line-height:1.5;">
-        If you didn’t request this change, please contact support immediately.
-      </p>
+          <!-- Body -->
+          <tr>
+            <td style="padding:28px 34px; text-align:center; color:#cbd5e1;">
 
-    </div>
+              <p style="font-size:16px; margin:0 0 10px;">
+                Hello, <strong style="color:#ffffff;">{{name}}</strong>
+              </p>
 
-    <!-- Footer -->
-    <div style="text-align:center; padding:18px; font-size:12px; color:#999; background:#fafafa;">
-      © {{year}} Your Company. All rights reserved.
-    </div>
+              <p style="font-size:14px; color:#8b95a7; line-height:1.6;">
+                Your permissions have been updated in the system.
+              </p>
 
-  </div>
+              <!-- Role -->
+              <div style="margin:26px 0; padding:20px; background:#0b0d12;
+                border:1px solid #262b36; border-radius:12px;">
+
+                <p style="margin:0; font-size:11px; color:#6b7280; letter-spacing:1.5px;">
+                  CURRENT ROLE
+                </p>
+
+                <p style="margin:10px 0 0; font-size:20px; font-weight:600;
+                  background:linear-gradient(90deg,#4f46e5,#9333ea);
+                  -webkit-background-clip:text;
+                  -webkit-text-fill-color:transparent;">
+                  {{role}}
+                </p>
+
+              </div>
+
+              <!-- Button -->
+              <a href="#"
+                class="btn"
+                style="display:inline-block; padding:13px 28px;
+                background:#4f46e5; color:#fff; text-decoration:none;
+                border-radius:10px; font-size:14px; font-weight:600;
+                transition:all 0.3s ease;">
+                Review Activity →
+              </a>
+
+              <!-- Warning -->
+              <div style="margin-top:28px; padding:14px; background:#151821;
+                border-left:3px solid #ef4444; border-radius:8px;">
+                <p style="margin:0; font-size:13px; color:#f87171;">
+                  Unauthorized change? Secure your account immediately.
+                </p>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- CONTACTS -->
+          <tr>
+            <td align="center" style="padding:25px 20px;">
+
+              <p style="margin:0 0 12px; font-size:12px; color:#6b7280; letter-spacing:1px;">
+                CONTACT
+              </p>
+
+              <a href="https://t.me/Vov_Markosyan"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:11px 20px;
+                 background:#229ED9; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:13px; font-weight:600;
+                 transition:all 0.25s ease;">
+                 Telegram
+              </a>
+
+              <a href="https://www.instagram.com/vov_markosyann/"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:11px 20px;
+                 background:#E1306C; color:#fff; text-decoration:none;
+                 border-radius:8px; font-size:13px; font-weight:600;
+                 transition:all 0.25s ease;">
+                 Instagram
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="text-align:center; padding:20px; font-size:12px;
+              color:#6b7280; border-top:1px solid #262b36;">
+              © {{year}} Your Company
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
 
 </body>
 </html>

@@ -9,7 +9,7 @@ export class UserSecurity {
   user: Types.ObjectId;
 
   @Prop({ default: null })
-  email?: string;
+  email: string;
 
   @Prop({ default: null })
   temporaryBlockUntil?: Date;

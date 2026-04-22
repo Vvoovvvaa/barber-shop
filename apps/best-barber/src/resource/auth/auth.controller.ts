@@ -4,6 +4,7 @@ import { BarberOrClientDTO } from './dto/create-auth.dto';
 import { AuthGuard } from '@app/common-barber';
 import { VerifyCodeDto } from './dto/code-dto';
 import { AuthUser } from '@app/common-barber';
+import { emitWarning } from 'process';
 
 
 @Controller('auth')
@@ -15,9 +16,10 @@ export class AuthController {
     return this.authService.registration(dto);
   }
 
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Post('login')
-  async verifyCode(@Body() dto: VerifyCodeDto, @AuthUser('phone') phone: string) {
-    return this.authService.login(phone, dto.code);
+  async verifyCode(@Body() dto: VerifyCodeDto) {
+    console.log("dto -",dto)
+    return this.authService.login(dto.phone, dto.email, dto.code);
   }
 }
