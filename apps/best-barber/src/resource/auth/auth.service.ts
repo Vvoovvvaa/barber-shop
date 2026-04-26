@@ -58,7 +58,7 @@ export class AuthService {
       user = await this.userModel.create(query);
     }
 
-    console.log("user email -", user.email)
+    // console.log("user email -", user.email)
 
     let security = await this.userSecurityModel.findOne({ user: user._id });
 
@@ -72,7 +72,7 @@ export class AuthService {
       });
     }
 
-    console.log("user ecurity -", security)
+    // console.log("user ecurity -", security)
 
     if (security.permanentlyBlock) {
       throw new ForbiddenException('Your account has been permanently banned');

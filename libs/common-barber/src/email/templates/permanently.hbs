@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0b0d12;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .card {
+      border: 1px solid #262b36;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 60px rgba(239,68,68,0.25);
+    }
+
+    .icon {
+      font-size: 48px;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .btn {
+      transition: all 0.25s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .contact-btn {
+      transition: all 0.25s ease;
+    }
+
+    .contact-btn:hover {
+      transform: scale(1.07);
+      opacity: 0.9;
+    }
+  </style>
+</head>
+
+<body>
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:60px 0;">
+    <tr>
+      <td align="center">
+
+        <table class="card" width="480" cellpadding="0" cellspacing="0"
+          style="background:#141821;">
+
+          <!-- TOP RED LINE -->
+          <tr>
+            <td style="height:4px;
+              background:linear-gradient(90deg,#ef4444,#f97316,#ef4444);">
+            </td>
+          </tr>
+
+          <!-- HEADER -->
+          <tr>
+            <td style="padding:26px; text-align:center;">
+              <h2 style="margin:0; color:#ffffff; font-size:20px;">
+                Account Restricted
+              </h2>
+            </td>
+          </tr>
+
+          <!-- ICON -->
+          <tr>
+            <td align="center" style="padding:10px;">
+              <div class="icon">⛔</div>
+            </td>
+          </tr>
+
+          <!-- CONTENT -->
+          <tr>
+            <td style="padding:20px 30px; text-align:center; color:#cbd5e1;">
+
+              <h3 style="margin:0 0 10px; font-size:16px; color:#ffffff;">
+                Hello, {{name}}
+              </h3>
+
+              <p style="font-size:13px; color:#9aa4b2; line-height:1.6;">
+                Your account has been <b style="color:#ef4444;">permanently blocked</b> due to security policy violations or multiple failed login attempts.
+              </p>
+
+              <p style="font-size:12px; color:#6b7280;">
+                If you believe this is a mistake, please contact support immediately.
+              </p>
+
+              <!-- WARNING BOX -->
+              <div style="margin:20px 0; padding:16px;
+                border:1px solid #2a2f3a;
+                background:#0b0d12;
+                border-radius:12px;
+                color:#ef4444;
+                font-size:12px;">
+                ⚠️ This action is permanent unless manually reviewed by admin.
+              </div>
+
+              <!-- BUTTON -->
+              <a href="#"
+                 class="btn"
+                 style="display:inline-block; margin-top:10px; padding:12px 24px;
+                 background:#ef4444; color:#fff; text-decoration:none;
+                 border-radius:10px; font-size:13px; font-weight:600;">
+                 Contact Support
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- CONTACT -->
+          <tr>
+            <td align="center" style="padding:25px 20px;">
+
+              <p style="margin:0 0 10px; font-size:11px; color:#6b7280;">
+                CONTACT
+              </p>
+
+              <a href="https://t.me/Vov_Markosyan"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:10px 18px;
+                 background:#229ED9; color:#fff; text-decoration:none;
+                 border-radius:10px; font-size:13px;">
+                 Telegram
+              </a>
+
+              <a href="https://www.instagram.com/vov_markosyann/"
+                 class="contact-btn"
+                 style="display:inline-block; margin:6px; padding:10px 18px;
+                 background:#E1306C; color:#fff; text-decoration:none;
+                 border-radius:10px; font-size:13px;">
+                 Instagram
+              </a>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="text-align:center; padding:16px;
+              font-size:11px; color:#6b7280;
+              border-top:1px solid #262b36;">
+              © {{year}} Security System
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

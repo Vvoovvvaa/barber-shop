@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { BarberAdminController } from './barber-admin.controller';
 import { BarberAdminService } from './barber-admin.service';
-import { validationSchema, mongoConfig, jwtConfig, IJWTConfig, redisConfig } from '@app/common-barber';
+import { validationSchema, mongoConfig, jwtConfig, IJWTConfig, redisConfig, EmailModule, RequestLoggerMiddleware, smtpConfig } from '@app/common-barber';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -9,8 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './resource/auth/auth.module';
 import { AdminsModule } from './resource/admins/admins.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
-import { RedisModule, TokenService } from '@app/redis';
-import { EmailModule } from './common/email/email.module';
+import { RedisModule } from '@app/redis';
 
 
 
@@ -19,7 +18,7 @@ import { EmailModule } from './common/email/email.module';
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: validationSchema,
-      load: [mongoConfig, jwtConfig,redisConfig],
+      load: [mongoConfig, jwtConfig,redisConfig,smtpConfig],
     }),
     JwtModule.registerAsync({
       global:true,
@@ -54,9 +53,13 @@ import { EmailModule } from './common/email/email.module';
     AuthModule,
     AdminsModule,
     RedisModule,
-    EmailModule
+    EmailModule,
   ],
   controllers: [BarberAdminController],
   providers: [BarberAdminService],
 })
-export class BarberAdminModule { }
+export class BarberAdminModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*')
+  }
+ }

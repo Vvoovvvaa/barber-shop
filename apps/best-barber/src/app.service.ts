@@ -65,7 +65,7 @@ export class AppService {
           subject: 'Добро пожаловать!',
           template: 'welcome-email',
           context: {
-            name: user.name || 'Пользователь',
+            name: user.name || 'User',
           },
         });
       }

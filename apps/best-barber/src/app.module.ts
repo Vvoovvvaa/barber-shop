@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -9,13 +9,12 @@ import { jwtConfig, mongoConfig, redisConfig } from '../../../libs/common-barber
 import { AuthModule } from './resource/auth/auth.module';
 import { BarberModule } from './resource/barber/barber.module';
 import { AppoitmentModule } from './resource/appoitment/appoitment.module';
-import { IJWTConfig, User, UserSchema, UserSecurity, UserSecuritySchema } from '@app/common-barber';
+import { IJWTConfig, RequestLoggerMiddleware, User, UserSchema, UserSecurity, UserSecuritySchema } from '@app/common-barber';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { S3Module } from '@app/common-barber/s3';
 import { RedisModule, RedisService, TokenService } from '@app/redis';
 import { PassportModule } from '@nestjs/passport';
 import { EmailModule } from '@app/common-barber/email/email.module';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { JwtStrategy } from '@app/common-barber/strategies/jwt.startegy';
 import { GoogleStrategy } from '@app/common-barber/strategies/google.strategy';
 import { smtpConfig } from '@app/common-barber/configs/email-config';
@@ -76,4 +75,8 @@ import { smtpConfig } from '@app/common-barber/configs/email-config';
   controllers: [AppController],
   providers: [AppService,JwtStrategy,GoogleStrategy],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*')
+  }
+ }
