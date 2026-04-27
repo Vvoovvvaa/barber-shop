@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 
 import { AdminsService } from './admins.service';
-import { AuthUser, IdDto } from '@app/common-barber';
+import { AuthUser } from '@app/common-barber';
 import { AdminAuthGuard } from '@app/common-barber/guard/admin-guard';
 @UseGuards(AdminAuthGuard)
 @Controller('admins')
 export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminsService) { }
 
   @Get()
   findAll() {
@@ -38,8 +38,16 @@ export class AdminsController {
   }
 
   @Delete('users/:id')
-  removeUser(@Param('id') userId: string) {
-    return this.adminsService.deleteUser(userId);
+  removeUser(
+    @Param('id') userId: string,
+    @AuthUser('id') id: string
+  ) {
+    return this.adminsService.deleteUser(userId, id)
+  }
+
+  @Post('users/:id')
+  blockUser(@Param('id') userId: string) {
+    return this.adminsService.blockUser(userId);
   }
 
   @Delete('services/:id')

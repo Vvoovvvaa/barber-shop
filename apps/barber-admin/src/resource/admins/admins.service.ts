@@ -37,12 +37,16 @@ export class AdminsService {
     return this.adminBlockService.unblock(adminId, superId);
   }
 
-  deleteUser(userId: string) {
-    return this.userService.deleteUser(userId);
+  blockUser(userId: string) {
+    return this.userService.blockUser(userId);
   }
 
   unlockUser(userId: string) {
     return this.userService.unlockUser(userId);
+  }
+
+  deleteUser(userId:string,adminId:string){
+    return this.userService.removeUser(userId,adminId)
   }
 
   deleteBarberService(serviceId: string) {

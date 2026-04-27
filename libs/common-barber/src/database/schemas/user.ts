@@ -8,7 +8,7 @@ export class User {
   phone?: string ;
 
   @Prop()
-  name?: string;
+  name: string;
 
   @Prop({
     type: String,
