@@ -5,6 +5,9 @@ import { Admin, AdminSchema, AdminSecurity, AdminSecuritySchema, Appointment, Ap
 import { MongooseModule } from '@nestjs/mongoose';
 import { RedisModule, RedisService, TokenService } from '@app/redis';
 import Redis from 'ioredis';
+import { AdminBlockService } from './services/admin-block.service';
+import { BarberManagementService } from './services/barber-management.service';
+import { UserManagementService } from './services/user-management.service';
 
 
 @Module({
@@ -15,11 +18,11 @@ import Redis from 'ioredis';
       { name: User.name, schema: UserSchema },
       { name: Barber.name, schema: BarberSchema },
       { name: Appointment.name, schema: AppointmentSchema },
-      {name: UserSecurity.name, schema: UserSecuritySchema}
-    ]),RedisModule
+      { name: UserSecurity.name, schema: UserSecuritySchema }
+    ]), RedisModule
   ],
   controllers: [AdminsController],
-  providers: [AdminsService],
+  providers: [AdminsService, AdminBlockService, BarberManagementService, UserManagementService,],
   exports: [AdminsService]
 })
 export class AdminsModule { }

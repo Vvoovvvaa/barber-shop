@@ -1,109 +1,80 @@
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Admin, IJWTConfig } from '@app/common-barber';
-import { Model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { AdminSecurity } from '@app/common-barber/database/schemas/admin-security';
+import { IJWTConfig } from '@app/common-barber';
 
+import { AdminRepository } from './repositories/admin.repository';
+import { PasswordService } from './services/password.service';
+import { TokenService } from './services/token.service';
+import { SecurityService } from './repositories/security.repository';
 @Injectable()
 export class AuthService {
   private jwtConfig: IJWTConfig;
 
   constructor(
-    @InjectModel(Admin.name)
-    private readonly adminModel: Model<Admin>,
-    @InjectModel(AdminSecurity.name)
-    private readonly securityModel: Model<AdminSecurity>,
+    private readonly adminRepo: AdminRepository,
+    private readonly passwordService: PasswordService,
+    private readonly tokenService: TokenService,
+    private readonly securityService: SecurityService,
     private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
   ) {
     this.jwtConfig = this.configService.get<IJWTConfig>('JWT_CONFIG')!;
   }
 
   async adminLogin(dto: CreateAuthDto) {
-    const admin = await this.adminModel
-      .findOne({ login: dto.login })
-      .select('+password');
+    const admin = await this.adminRepo.findByLogin(dto.login);
 
     if (!admin) {
       throw new BadRequestException('Admin not found');
     }
 
-    let security = await this.securityModel.findOne({ admin: admin._id });
-    if (!security) {
-      security = await this.securityModel.create({
-        admin: admin._id,
-        totalLoginAttempts: 0,
-        temporaryBlocksCount: 0,
-      });
+    await this.securityService.checkBlocked(admin._id.toString());
+
+    const isValid = await this.passwordService.compare(
+      dto.password,
+      admin.password,
+    );
+
+    if (!isValid) {
+      await this.securityService.failedAttempt(admin._id.toString());
+      throw new BadRequestException('invalid credentials');
     }
 
-    if (security.permanentlyBlock === true) {
-      throw new ForbiddenException('Your account have banned for a long time')
-    }
+    await this.securityService.reset(admin._id.toString());
 
-    if (security.temporaryBlockUntil && security.temporaryBlockUntil > new Date()) {
-      throw new ForbiddenException(`Account temporarily blocked until ${security.temporaryBlockUntil}`);
-    }
-
-    const isPasswordValid = await bcrypt.compare(dto.password, admin.password);
-
-    if (!isPasswordValid) {
-      security.totalLoginAttempts += 1
-      if (security.totalLoginAttempts >= 5) {
-        security.temporaryBlockUntil = new Date(Date.now() + 10  * 15 * 1000);
-        security.totalLoginAttempts = 0;
-        security.temporaryBlocksCount += 1;
-      }
-
-      if (security.temporaryBlocksCount >= 3) {
-        security.permanentlyBlock = true
-      }
-
-      await security.save()
-      throw new BadRequestException('invalid credentials')
-    }
-
-    security.totalLoginAttempts = 0
-    await security.save()
-
-
-    const tempToken = this.jwtService.sign(
+    const tempToken = this.tokenService.signAdmin(
       {
         sub: admin._id.toString(),
         login: admin.login,
         temp: true,
       },
-      {
-        secret: this.jwtConfig.admin,
-        expiresIn: '1d',
-      },
+      this.jwtConfig.admin,
     );
 
-    return { tempToken, message: `succeful login ${admin.login}` };
+    return {
+      tempToken,
+      message: `successful login ${admin.login}`,
+    };
   }
 
   async createAdmin(dto: CreateAuthDto, userId: string) {
-    const creator = await this.adminModel
-      .findById(userId)
-      .select('+superAdmin')
+    const creator = await this.adminRepo.findById(userId);
 
     if (!creator || !creator.superAdmin) {
-      throw new ForbiddenException('Only superAdmin can create admins')
+      throw new ForbiddenException('Only superAdmin can create admins');
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const hashedPassword = await this.passwordService.hash(dto.password);
 
-    const admin = await this.adminModel.create({
+    const admin = await this.adminRepo.create({
       login: dto.login,
       password: hashedPassword,
       superAdmin: false,
     });
 
-    return { admin, message: `admin ${admin.login} are succesful created` };
+    return {
+      admin,
+      message: `admin ${admin.login} successfully created`,
+    };
   }
-
 }
