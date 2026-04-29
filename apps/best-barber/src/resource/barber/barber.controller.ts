@@ -9,6 +9,7 @@ import { PhotoValidationPipe } from "@app/common-barber/validator"
 import { FileInterceptor } from "@nestjs/platform-express"
 import { Multer } from "multer"
 import { EndOrderDTO } from "../appoitment/dto/end-order.dto"
+import { changeStatusDto } from "./dto/change-status.dto"
 
 @UseGuards(AuthGuard)
 @Controller('barbers')
@@ -16,8 +17,8 @@ export class BarberController {
   constructor(private readonly barbersService: BarberService) { }
 
   @Post('change')
-  async createBarber(@AuthUser('id') id: string) {
-    return this.barbersService.changeStatus(id)
+  async createBarber(@AuthUser('id') id: string, @Body() dto: changeStatusDto) {
+    return this.barbersService.changeStatus(id,dto)
   }
 
   @Get()

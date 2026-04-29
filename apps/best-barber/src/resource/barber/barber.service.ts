@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { status } from "@app/common-barber/database/enums";
@@ -9,6 +9,7 @@ import { v4 as uuid } from 'uuid'
 import { S3Service } from "@app/common-barber/s3";
 import { UserImage } from "@app/common-barber/database/schemas/s3-image";
 import { SenderService } from "@app/common-barber/email/sender.service";
+import { changeStatusDto } from "./dto/change-status.dto";
 
 
 @Injectable()
@@ -24,33 +25,46 @@ export class BarberService {
     private readonly senderservice: SenderService
   ) { }
 
-  async changeStatus(userId: string) {
-    const user = await this.userModel.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+async changeStatus(userId: string, dto:changeStatusDto) {
+  const user = await this.userModel.findById(userId);
 
-    if (user.role === status.CLIENT) {
-      user.role = status.BARBER;
-    }
-
-    if (user.email) {
-      await this.senderservice.sendEmail({
-        to: user.email,
-        from: process.env.SMTP_FROM || 'no-reply@example.com',
-        subject: 'role updated',
-        template: 'role-change',
-        context: {
-          name: user.name || 'Пользователь',
-          role: status.BARBER
-        },
-      });
-    }
-
-    Object.assign(user);
-
-    return await user.save();
+  if (!user) {
+    throw new NotFoundException('User not found');
   }
+
+  if (user.email && !user.phone) {
+    if (!dto.phone) {
+      throw new BadRequestException(
+        'To become a barber, you have to add a phone number'
+      );
+    }
+
+    user.phone = dto.phone;
+  }
+
+  if (dto.phone && user.phone !== dto.phone) {
+    user.phone = dto.phone;
+  }
+
+  if (user.role === status.CLIENT) {
+    user.role = status.BARBER;
+  }
+
+  if (user.email) {
+    await this.senderservice.sendEmail({
+      to: user.email,
+      from: process.env.SMTP_FROM || 'no-reply@example.com',
+      subject: 'Role updated',
+      template: 'role-change',
+      context: {
+        name: user.name || user.email ||'User',
+        role: status.BARBER,
+      },
+    });
+  }
+
+  return await user.save();
+}
 
 
 
