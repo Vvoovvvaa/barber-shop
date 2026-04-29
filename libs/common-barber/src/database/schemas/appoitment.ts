@@ -9,10 +9,10 @@ export class Appointment {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   client: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: BarberService.name, required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Barber', required: true })
   barber: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'BarberService', required: true })
+  @Prop({ type: Types.ObjectId, ref: BarberService.name, required: true })
   service: Types.ObjectId; 
 
   @Prop({ required: true })

@@ -19,6 +19,12 @@ export class Barber extends Document {
 
     @Prop()
     experience: number;
+
+    @Prop({ default: 0 })
+    retingAvd: number
+
+    @Prop({ default: 0 })
+    retingCount: number
 }
 
 export const BarberSchema = SchemaFactory.createForClass(Barber);

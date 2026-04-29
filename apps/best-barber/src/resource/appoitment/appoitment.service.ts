@@ -5,7 +5,7 @@ import { Model } from "mongoose";
 import { CreateAppointmentDto } from "./dto/appoitment.dto";
 import { AppointmentStatusDTO } from "./dto/status.dto";
 import { Appointment, Barber, User } from "@app/common-barber/database/schemas";;
-import { endOrder, status } from "@app/common-barber/database/enums";
+import { AppointmentStatus, endOrder, status } from "@app/common-barber/database/enums";
 import { BarberService } from "@app/common-barber/database/schemas/barber-service";
 import { EndOrderDTO } from "./dto/end-order.dto";
 import { SenderService } from "@app/common-barber/email/sender.service";
@@ -108,54 +108,54 @@ export class AppointmentService {
   }
 
   async endOfOrder(barberId: string, dto: EndOrderDTO) {
-    const { appointmentId, result, priceOfWork } = dto;
+  const { appointmentId, result, priceOfWork } = dto;
 
-    const appointment = await this.appointmentModel
-      .findById(appointmentId)
-      .populate('client');
+  const appointment = await this.appointmentModel
+    .findById(appointmentId)
+    .populate('client');
 
-    if (!appointment) {
-      throw new NotFoundException('Appointment not found!');
-    }
-
-    if (!appointment.barber) {
-      throw new BadRequestException('Invalid appointment');
-    }
-
-    if (appointment.barber.toString() !== barberId) {
-      throw new ForbiddenException('This appointment is not yours');
-    }
-
-    const price = result === endOrder.ENDWORK ? priceOfWork : 0;
-
-    const updated = await this.appointmentModel.findByIdAndUpdate(
-      appointmentId,
-      {
-        $set: { end: result },
-      },
-      { new: true },
-    );
-
-    const client = appointment.client as any;
-
-    if(client.email){
-      await this.sendservice.sendEmail({
-        to: client.email,
-        from: process.env.SMTP_FROM || 'no-reply@example.com',
-        subject: 'Your receipt',
-        template: 'receipt',
-        context: {
-          name: client.name || 'User',
-          price
-        }
-        
-      })
-    }
-
-    return updated
-
+  if (!appointment) {
+    throw new NotFoundException('Appointment not found!');
   }
 
+  if (appointment.barber.toString() !== barberId) {
+    throw new ForbiddenException('This appointment is not yours');
+  }
+
+  if (appointment.end) {
+    throw new BadRequestException('Appointment already finished');
+  }
+
+  const price = result === endOrder.ENDWORK ? priceOfWork : 0;
+
+  const updated = await this.appointmentModel.findByIdAndUpdate(
+    appointmentId,
+    {
+      $set: {
+        end: result,
+        status: AppointmentStatus.COMPLETED,
+      },
+    },
+    { new: true },
+  );
+
+  const client = appointment.client as any;
+
+  if (client.email) {
+    await this.sendservice.sendEmail({
+      to: client.email,
+      from: process.env.SMTP_FROM || 'no-reply@example.com',
+      subject: 'Your receipt',
+      template: 'receipt',
+      context: {
+        name: client.name || 'User',
+        price,
+      },
+    });
+  }
+
+  return updated;
+}
 }
 
 

@@ -18,6 +18,7 @@ import { EmailModule } from '@app/common-barber/email/email.module';
 import { JwtStrategy } from '@app/common-barber/strategies/jwt.startegy';
 import { GoogleStrategy } from '@app/common-barber/strategies/google.strategy';
 import { smtpConfig } from '@app/common-barber/configs/email-config';
+import { ReviewsModule } from './resource/reviews/reviews.module';
 
 @Module({
   imports: [
@@ -69,7 +70,8 @@ import { smtpConfig } from '@app/common-barber/configs/email-config';
     AppoitmentModule,
     S3Module,
     RedisModule,
-    EmailModule
+    EmailModule,
+    ReviewsModule
     // UserModule,
   ],
   controllers: [AppController],
