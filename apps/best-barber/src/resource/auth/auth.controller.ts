@@ -1,10 +1,11 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { BarberOrClientDTO } from './dto/create-auth.dto';
 import { AuthGuard } from '@app/common-barber';
 import { VerifyCodeDto } from './dto/code-dto';
 import { AuthUser } from '@app/common-barber';
 import { emitWarning } from 'process';
+import { get } from 'http';
 
 
 @Controller('auth')
@@ -21,5 +22,10 @@ export class AuthController {
   async verifyCode(@Body() dto: VerifyCodeDto) {
     console.log("dto -",dto)
     return this.authService.login(dto.phone, dto.email, dto.code);
+  }
+
+  @Get('all')
+  async allUser(){
+    return this.authService.allUSer()
   }
 }

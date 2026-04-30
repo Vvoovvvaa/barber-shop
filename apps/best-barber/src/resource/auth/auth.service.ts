@@ -96,6 +96,7 @@ export class AuthService {
 
     const session = new this.authSessionModel(sessionData);
     await session.save()
+    console.log('CREATED USER', user)
 
     const tempToken = this.jwtService.sign(
       {
@@ -222,10 +223,16 @@ export class AuthService {
         },
       });
     }
+    console.log(await this.userModel.db.name);
 
     return {
       token,
       message: `User ${user.name || user.phone || user.email} successful login`,
     };
+  }
+
+
+  async allUSer(){
+    return this.userModel.find()
   }
 }
