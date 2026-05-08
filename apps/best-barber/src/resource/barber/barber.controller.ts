@@ -1,4 +1,7 @@
 import { UseGuards, Controller, Get, Param, Post, Body, Patch, Delete, UploadedFile, UseInterceptors } from "@nestjs/common"
+import { Multer } from "multer"
+import { FileInterceptor } from "@nestjs/platform-express"
+
 import { AuthUser } from "@app/common-barber"
 import { AuthGuard } from "@app/common-barber"
 import { CreateBarberServiceDto } from "./dto/create-barber.dto"
@@ -6,8 +9,6 @@ import { UpdateBarberServiceDto } from "./dto/update-barber.dto"
 import { BarberService } from "./barber.service"
 import { IdDto } from "@app/common-barber/dto/parap-id.dto"
 import { PhotoValidationPipe } from "@app/common-barber/validator"
-import { FileInterceptor } from "@nestjs/platform-express"
-import { Multer } from "multer"
 import { EndOrderDTO } from "../appoitment/dto/end-order.dto"
 import { changeStatusDto } from "./dto/change-status.dto"
 
@@ -30,11 +31,6 @@ export class BarberController {
   async findOneBarber(@Param() param: IdDto) {
     return this.barbersService.findOneBarber(param.id)
   }
-
-  // @Post('service')
-  // async createServices(@AuthUser('id') id: string, @Body() dto: CreateBarberServiceDto) {
-  //   return this.barbersService.createService(id, dto)
-  // }
 
   @UseInterceptors(FileInterceptor('photo'))
   @Patch('service')

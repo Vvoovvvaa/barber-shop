@@ -8,20 +8,26 @@ import { S3Module } from '@app/common-barber/s3';
 import { UserImage, UserImageSchema } from '@app/common-barber/database/schemas/s3-image';
 import { SenderService } from '@app/common-barber/email/sender.service';
 import { EmailModule } from '@app/common-barber/email/email.module';
+import { changeStatusService } from './services/change-status.service';
+import { CreateBarberService } from './services/create-barber-service.service';
+import { findBarberService } from './services/find-barber.service';
+import { handleImageUploadservice } from './services/handle-Image-Upload.service';
+import { removeService } from './services/remove.service';
+import { UpdateBarberService } from './services/update-service.service';
 
 @Module({
-  imports:[
+  imports: [
     AuthModule,
     S3Module,
     EmailModule,
     MongooseModule.forFeature([
-      {name:Barber.name,schema: BarberSchema},
-      {name:User.name,schema: UserSchema},
-      {name:UserImage.name,schema: UserImageSchema}
-  ])],
+      { name: Barber.name, schema: BarberSchema },
+      { name: User.name, schema: UserSchema },
+      { name: UserImage.name, schema: UserImageSchema }
+    ])],
   controllers: [BarberController],
-  providers: [BarberService],
+  providers: [BarberService, changeStatusService, CreateBarberService, findBarberService, handleImageUploadservice, removeService, UpdateBarberService],
 })
-export class BarberModule {}
+export class BarberModule { }
 
 

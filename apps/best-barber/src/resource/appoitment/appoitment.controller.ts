@@ -33,9 +33,14 @@ export class AppoitmentController {
     return this.appointmentService.acceptedOrRejected(id, param.id, dto)
   }
 
-  @Get()
+  @Get('view/user')
   async getAppointmentForUser(@AuthUser('id') id: string) {
     return this.appointmentService.getAppointmentsForUser(id)
+  }
+
+  @Get('view/barber')
+  async getAppointmentsForBarber(@AuthUser('id') id:string){
+    return this.appointmentService.getAppointmentsForBarber(id)
   }
 
 }

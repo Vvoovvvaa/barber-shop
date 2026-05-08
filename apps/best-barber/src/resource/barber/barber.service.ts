@@ -1,165 +1,53 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { status } from "@app/common-barber/database/enums";
-import { Barber, User } from "@app/common-barber/database/schemas";
+import { Injectable } from "@nestjs/common";
+
 import { CreateBarberServiceDto } from "./dto/create-barber.dto";
 import { UpdateBarberServiceDto } from "./dto/update-barber.dto";
-import { v4 as uuid } from 'uuid'
-import { S3Service } from "@app/common-barber/s3";
-import { UserImage } from "@app/common-barber/database/schemas/s3-image";
-import { SenderService } from "@app/common-barber/email/sender.service";
 import { changeStatusDto } from "./dto/change-status.dto";
+import { changeStatusService } from "./services/change-status.service";
+import { findBarberService } from "./services/find-barber.service";
+import { handleImageUploadservice } from "./services/handle-Image-Upload.service";
+import { removeService } from "./services/remove.service";
+import { CreateBarberService } from "./services/create-barber-service.service";
+import { UpdateBarberService } from "./services/update-service.service";
 
 
 @Injectable()
 export class BarberService {
   constructor(
-    @InjectModel(Barber.name)
-    private readonly barberModel: Model<Barber>,
-    @InjectModel(User.name)
-    private readonly userModel: Model<User>,
-    @InjectModel(UserImage.name)
-    private readonly imageModel: Model<UserImage>,
-    private readonly s3service: S3Service,
-    private readonly senderservice: SenderService
+    private readonly changeStatusService: changeStatusService,
+    private readonly createBarberService: CreateBarberService,
+    private readonly findBarberService: findBarberService,
+    private readonly imageUpload: handleImageUploadservice,
+    private readonly removeBarberService: removeService,
+    private readonly updateBarberService: UpdateBarberService
   ) { }
 
-async changeStatus(userId: string, dto:changeStatusDto) {
-  const user = await this.userModel.findById(userId);
-
-  if (!user) {
-    throw new NotFoundException('User not found');
+  changeStatus(userId: string, dto: changeStatusDto) {
+    return this.changeStatusService.changeStatus(userId, dto)
   }
 
-  if (user.email && !user.phone) {
-    if (!dto.phone) {
-      throw new BadRequestException(
-        'To become a barber, you have to add a phone number'
-      );
-    }
-
-    user.phone = dto.phone;
+  handleImageUpload(userId: string, file: Express.Multer.File) {
+    return this.imageUpload.handleImageUpload(userId, file)
   }
 
-  if (dto.phone && user.phone !== dto.phone) {
-    user.phone = dto.phone;
+  barberServices(userId: string, dto: CreateBarberServiceDto, file?: Express.Multer.File) {
+    return this.createBarberService.barberServices(userId, dto, file)
   }
 
-  if (user.role === status.CLIENT) {
-    user.role = status.BARBER;
+  findAllBarbers() {
+    return this.findBarberService.findAllBarbers()
   }
 
-  if (user.email) {
-    await this.senderservice.sendEmail({
-      to: user.email,
-      from: process.env.SMTP_FROM || 'no-reply@example.com',
-      subject: 'Role updated',
-      template: 'role-change',
-      context: {
-        name: user.name || user.email ||'User',
-        role: status.BARBER,
-      },
-    });
+  findOneBarber(userId: string) {
+    return this.findBarberService.findOneBarber(userId)
   }
 
-  return await user.save();
-}
-
-
-
-  private async handleImageUpload(userId: string, file: Express.Multer.File) {
-    const fileExtension = file.originalname.split('.').pop();
-    const fileName = `${uuid()}.${fileExtension}`;
-    const filePath = `Vova/BarberShop/Barbers/${userId}/${fileName}`;
-
-    await this.s3service.putObject(file.buffer, filePath, file.mimetype);
-
-    return this.imageModel.findOneAndUpdate(
-      { user: userId },
-      { path: filePath, size: file.size },
-      { upsert: true, new: true }
-    );
-  }
-
-  async barberServices(userId: string, dto: CreateBarberServiceDto, file?: Express.Multer.File) {
-    const user = await this.userModel.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (user.role !== status.BARBER) {
-      throw new ForbiddenException('Only barbers can add services');
-    }
-
-
-    const barberService = await this.barberModel.create({
-      user: user._id,
-      description: dto.description,
-      services: dto.services,
-      workingHours: dto.workingHours,
-      experience: dto.experience || 0,
-
-    });
-
-
-    if (file) {
-      await this.handleImageUpload(userId, file)
-    }
-
-    return barberService;
-  }
-
-
-
-  async findAllBarbers() {
-    const services = await this.userModel.find()
-    return services.filter(e => e.role === status.BARBER);
-  }
-
-  async findOneBarber(userId: string) {
-    const barber = await this.userModel.findOne({
-      _id: userId,
-      role: status.BARBER,
-    });
-
-    if (!barber) {
-      throw new NotFoundException('Barber not found');
-    }
-
-    return barber;
-  }
-
-
-  // async createService(userId: string, dto: CreateBarberServiceDto) {
-  //   return this.barberModel.create({ user: userId, ...dto })
-  // }
-
-
-  async updateService(userId: string, dto: UpdateBarberServiceDto, file?: Express.Multer.File) {
-    const service = await this.barberModel.findOne({ user: userId })
-
-    if (!service) {
-      throw new NotFoundException('service not found')
-    }
-
-    if (file) {
-      await this.handleImageUpload(userId, file)
-    }
-
-    return this.barberModel.findOneAndUpdate({ _id: service._id }, dto, { new: true })
+  updateService(userId: string, dto: UpdateBarberServiceDto, file?: Express.Multer.File) {
+    return this.updateBarberService.updateService(userId, dto, file)
   }
 
   async removeService(userId: string) {
-    const service = await this.barberModel.findOne({ user: userId })
-
-    if (!service) {
-      throw new NotFoundException('service not found')
-    }
-
-    await this.barberModel.findOneAndDelete({ _id: service._id })
-    return { message: "Service succesful deleted" }
+    return this.removeBarberService.removeService(userId)
   }
-
 
 }
